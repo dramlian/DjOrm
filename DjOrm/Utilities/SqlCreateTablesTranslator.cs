@@ -14,7 +14,7 @@ public class SqlCreateTablesTranslator
         foreach (var table in _tableData)
         {
             StringBuilder parametersBuilder = new();
-            parametersBuilder.Append($"CREATE TABLE users (");
+            parametersBuilder.Append($"CREATE TABLE IF NOT EXISTS {table.TableName}(");
 
             if (_tableData?.FirstOrDefault()?.Properties is null) continue;
 
