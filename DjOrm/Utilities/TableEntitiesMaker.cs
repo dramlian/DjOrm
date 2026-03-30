@@ -19,7 +19,7 @@ public class TableEntitiesMaker
             var primaryKeyRaw = GetPKPropertiesOfTable(table);
             var propertiesRaw = ScanNonPKPropertiesOfTable(table);
 
-            Property primaryKey = TranslateTheProperty(primaryKeyRaw);
+            Property primaryKey = TranslateTheProperty(primaryKeyRaw, true);
             var properties = propertiesRaw.Select(x => TranslateTheProperty(x));
 
             ret.Add(new Table(table.FullName ?? throw new Exception("Could not determine table name"), [primaryKey, .. properties]));
@@ -27,9 +27,19 @@ public class TableEntitiesMaker
         return ret;
     }
 
-    private Property TranslateTheProperty(PropertyInfo primaryKeyRaw, bool isPk = false)
+    private Property TranslateTheProperty(PropertyInfo propertyInfo, bool isPk = false)
     {
-        return new Property(primaryKeyRaw.Name, isPk, primaryKeyRaw.PropertyType.Name, _typeTranslator.TranslateToSql(primaryKeyRaw.PropertyType.Name));
+        return new Property(propertyInfo.Name, isPk, propertyInfo.PropertyType.Name,
+        _typeTranslator.TranslateToSql(propertyInfo.PropertyType.Name), IsNullable(propertyInfo));
+    }
+
+    private bool IsNullable(PropertyInfo propertyInfo)
+    {
+        var nullabilityContext = new NullabilityInfoContext();
+        var nullabilityInfo = nullabilityContext.Create(propertyInfo);
+
+        return nullabilityInfo.WriteState == NullabilityState.Nullable
+                       || nullabilityInfo.ReadState == NullabilityState.Nullable; ;
     }
 
     public IEnumerable<Type> ScanAllClasses()
@@ -51,7 +61,8 @@ public class TableEntitiesMaker
 
     public IEnumerable<PropertyInfo> ScanNonPKPropertiesOfTable(Type tableClass)
     {
-        return tableClass.GetProperties().Where(x => x?.CustomAttributes.Count() == 0);
+        return tableClass.GetProperties().Where(x =>
+            !x.CustomAttributes.Any(a => a.AttributeType == typeof(PrimaryKeyAttribute)));
     }
 
 }
