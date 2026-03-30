@@ -1,4 +1,4 @@
-public class TypeTranslator
+public class TypeTranslator : ITypeTranslator
 {
     private static readonly Dictionary<string, string> TypeMap = new()
     {

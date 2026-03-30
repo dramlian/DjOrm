@@ -1,6 +1,6 @@
 using System.Text;
 
-public class SqlCreateTablesTranslator
+public class SqlCreateTablesTranslator : ISqlCreateTablesTranslator
 {
     private IEnumerable<Table> _tableData;
 

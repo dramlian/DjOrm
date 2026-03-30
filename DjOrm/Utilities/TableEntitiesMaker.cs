@@ -1,11 +1,11 @@
 using System.Reflection;
 
-public class TableEntitiesMaker
+public class TableEntitiesMaker : ITableEntitiesMaker
 {
-    private TypeTranslator _typeTranslator;
+    private ITypeTranslator _typeTranslator;
     private Assembly _assembly;
 
-    public TableEntitiesMaker(TypeTranslator typeTranslator)
+    public TableEntitiesMaker(ITypeTranslator typeTranslator)
     {
         _typeTranslator = typeTranslator;
         _assembly = Assembly.GetExecutingAssembly();
