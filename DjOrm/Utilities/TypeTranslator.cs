@@ -3,14 +3,14 @@ public class TypeTranslator : ITypeTranslator
     private static readonly Dictionary<string, string> TypeMap = new()
     {
         { "Int32",    "INTEGER" },
-        { "Int64",    "INTEGER" },
+        { "Int64",    "BIGINT" },
         { "String",   "TEXT" },
-        { "Boolean",  "INTEGER" },
-        { "Double",   "REAL" },
+        { "Boolean",  "BOOLEAN" },
+        { "Double",   "DOUBLE PRECISION" },
         { "Single",   "REAL" },
-        { "Decimal",  "REAL" },
-        { "DateTime", "TEXT" },
-        { "Byte[]",   "BLOB" }
+        { "Decimal",  "NUMERIC" },
+        { "DateTime", "TIMESTAMP" },
+        { "Byte[]",   "BYTEA" }
     };
 
     public string TranslateToSql(string runTimeCodeType)

@@ -22,14 +22,14 @@ public class SqlCreateTablesTranslator : ISqlCreateTablesTranslator
             {
                 if (property.TranslatedSQLType.Equals("INTEGER"))
                 {
-                    parametersBuilder.Append($"{property.FullName} INTEGER {(property.IsPrimaryKey ? "PRIMARY KEY AUTOINCREMENT" : string.Empty)},");
+                    parametersBuilder.Append($"{property.FullName} INTEGER {(property.IsPrimaryKey ? "GENERATED ALWAYS AS IDENTITY PRIMARY KEY" : string.Empty)},");
                 }
                 else
                 {
                     parametersBuilder.Append($"{property.FullName} {property.TranslatedSQLType} {(property.IsNullable ? string.Empty : "NOT NULL")},");
                 }
             }
-            parametersBuilder.Append("created_at DATETIME DEFAULT CURRENT_TIMESTAMP );");
+            parametersBuilder.Append("created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP );");
             yield return parametersBuilder.ToString();
         }
     }
