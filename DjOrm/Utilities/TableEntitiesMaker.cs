@@ -17,14 +17,21 @@ public class TableEntitiesMaker : ITableEntitiesMaker
         foreach (var table in ScanAllClasses())
         {
             var primaryKeyRaw = GetPKPropertiesOfTable(table);
-            var propertiesRaw = ScanNonPKPropertiesOfTable(table);
+            var propertiesRaw = ScanOrdinaryPropertiesOfTable(table);
+            var secondaryKeysRaw = GetSKPropertiesOfTable(table);
 
             Property primaryKey = TranslateTheProperty(primaryKeyRaw, true);
             var properties = propertiesRaw.Select(x => TranslateTheProperty(x));
+            var secondaryKeyProperties = secondaryKeysRaw.Select(x => TranslateTheSecondaryKeyProperty(x)).ToList();
 
-            ret.Add(new Table(table.FullName ?? throw new Exception("Could not determine table name"), [primaryKey, .. properties]));
+            ret.Add(new Table(table.FullName ?? throw new Exception("Could not determine table name"), [primaryKey, .. properties, .. secondaryKeyProperties]));
         }
         return ret;
+    }
+
+    private SecondaryProperty TranslateTheSecondaryKeyProperty(PropertyInfo propertyInfo)
+    {
+        return new SecondaryProperty($"{propertyInfo.PropertyType.Name}_id", IsNullable(propertyInfo), $"{propertyInfo.PropertyType.Name}", GetPKPropertiesOfTable(propertyInfo.PropertyType).Name);
     }
 
     private Property TranslateTheProperty(PropertyInfo propertyInfo, bool isPk = false)
@@ -59,10 +66,15 @@ public class TableEntitiesMaker : ITableEntitiesMaker
         return pkProperties.First();
     }
 
-    public IEnumerable<PropertyInfo> ScanNonPKPropertiesOfTable(Type tableClass)
+    public IEnumerable<PropertyInfo> GetSKPropertiesOfTable(Type tableClass)
+    {
+        return tableClass.GetProperties().Where(x => x?.CustomAttributes?.FirstOrDefault()?.AttributeType == typeof(SecondaryyKeyAttribute));
+    }
+
+    public IEnumerable<PropertyInfo> ScanOrdinaryPropertiesOfTable(Type tableClass)
     {
         return tableClass.GetProperties().Where(x =>
-            !x.CustomAttributes.Any(a => a.AttributeType == typeof(PrimaryKeyAttribute)));
+            !x.CustomAttributes.Any(a => a.AttributeType == typeof(PrimaryKeyAttribute) || a.AttributeType == typeof(SecondaryyKeyAttribute)));
     }
 
 }

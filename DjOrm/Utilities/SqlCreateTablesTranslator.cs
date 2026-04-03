@@ -11,14 +11,14 @@ public class SqlCreateTablesTranslator : ISqlCreateTablesTranslator
 
     public IEnumerable<string> TranslateEntitiesToCreateTables()
     {
-        foreach (var table in _tableData)
+        foreach (var table in _tableData.OrderBy(x => x.Properties.Count(p => p is SecondaryProperty)))
         {
             StringBuilder parametersBuilder = new();
             parametersBuilder.Append($"CREATE TABLE IF NOT EXISTS {table.TableName}(");
 
             if (_tableData?.FirstOrDefault()?.Properties is null) continue;
 
-            foreach (var property in _tableData.FirstOrDefault()!.Properties)
+            foreach (var property in table!.Properties)
             {
                 if (property.TranslatedSQLType.Equals("INTEGER"))
                 {
@@ -29,7 +29,25 @@ public class SqlCreateTablesTranslator : ISqlCreateTablesTranslator
                     parametersBuilder.Append($"{property.FullName} {property.TranslatedSQLType} {(property.IsNullable ? string.Empty : "NOT NULL")},");
                 }
             }
-            parametersBuilder.Append("created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP );");
+
+            var secondaryForeignFields = table.Properties.Where(x => x.GetType() == typeof(SecondaryProperty)).Select(x => (SecondaryProperty)x).ToList();
+            bool anyForeignFields = secondaryForeignFields.Any();
+            parametersBuilder.Append($"created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP {(anyForeignFields ? "," : ");")}");
+
+            if (anyForeignFields)
+            {
+                for (int i = 0; i < secondaryForeignFields.Count(); i++)
+                {
+                    parametersBuilder.Append($"CONSTRAINT fk_{secondaryForeignFields[i].TargetTableName} FOREIGN KEY ({secondaryForeignFields[i].FullName}) REFERENCES " +
+                    $"{secondaryForeignFields[i].TargetTableName}({secondaryForeignFields[i].TargetTablePrimaryKeyName}) ON DELETE CASCADE");
+
+                    if (i != secondaryForeignFields.Count() - 1)
+                    {
+                        parametersBuilder.Append(",");
+                    }
+                }
+                parametersBuilder.Append(");");
+            }
             yield return parametersBuilder.ToString();
         }
     }
