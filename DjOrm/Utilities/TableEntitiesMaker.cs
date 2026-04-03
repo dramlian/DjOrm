@@ -22,16 +22,10 @@ public class TableEntitiesMaker : ITableEntitiesMaker
 
             Property primaryKey = TranslateTheProperty(primaryKeyRaw, true);
             var properties = propertiesRaw.Select(x => TranslateTheProperty(x));
-            var secondaryKeyProperties = secondaryKeysRaw.Select(x => TranslateTheSecondaryKeyProperty(x)).ToList();
 
-            ret.Add(new Table(table.FullName ?? throw new Exception("Could not determine table name"), [primaryKey, .. properties, .. secondaryKeyProperties]));
+            ret.Add(new Table(table.FullName ?? throw new Exception("Could not determine table name"), [primaryKey, .. properties], table));
         }
         return ret;
-    }
-
-    private SecondaryProperty TranslateTheSecondaryKeyProperty(PropertyInfo propertyInfo)
-    {
-        return new SecondaryProperty($"{propertyInfo.PropertyType.Name}_id", IsNullable(propertyInfo), $"{propertyInfo.PropertyType.Name}", GetPKPropertiesOfTable(propertyInfo.PropertyType).Name);
     }
 
     private Property TranslateTheProperty(PropertyInfo propertyInfo, bool isPk = false)

@@ -11,7 +11,7 @@ public class SqlCreateTablesTranslator : ISqlCreateTablesTranslator
 
     public IEnumerable<string> TranslateEntitiesToCreateTables()
     {
-        foreach (var table in _tableData.OrderBy(x => x.Properties.Count(p => p is SecondaryProperty)))
+        foreach (var table in _tableData)
         {
             StringBuilder parametersBuilder = new();
             parametersBuilder.Append($"CREATE TABLE IF NOT EXISTS {table.TableName}(");
@@ -30,24 +30,8 @@ public class SqlCreateTablesTranslator : ISqlCreateTablesTranslator
                 }
             }
 
-            var secondaryForeignFields = table.Properties.Where(x => x.GetType() == typeof(SecondaryProperty)).Select(x => (SecondaryProperty)x).ToList();
-            bool anyForeignFields = secondaryForeignFields.Any();
-            parametersBuilder.Append($"created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP {(anyForeignFields ? "," : ");")}");
+            parametersBuilder.Append($"created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);");
 
-            if (anyForeignFields)
-            {
-                for (int i = 0; i < secondaryForeignFields.Count(); i++)
-                {
-                    parametersBuilder.Append($"CONSTRAINT fk_{secondaryForeignFields[i].TargetTableName} FOREIGN KEY ({secondaryForeignFields[i].FullName}) REFERENCES " +
-                    $"{secondaryForeignFields[i].TargetTableName}({secondaryForeignFields[i].TargetTablePrimaryKeyName}) ON DELETE CASCADE");
-
-                    if (i != secondaryForeignFields.Count() - 1)
-                    {
-                        parametersBuilder.Append(",");
-                    }
-                }
-                parametersBuilder.Append(");");
-            }
             yield return parametersBuilder.ToString();
         }
     }

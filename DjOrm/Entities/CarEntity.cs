@@ -8,4 +8,7 @@ public class CarEntity
 
     [SecondaryKeyAttribute]
     public DriverEntity Driver { get; set; }
+
+    [SecondaryKeyAttribute]
+    public DriverEntity DriverTwo { get; set; }
 }

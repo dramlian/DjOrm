@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using Npgsql;
 
 public class DjOrm
 {
@@ -6,22 +6,15 @@ public class DjOrm
     {
         ITableEntitiesMaker entitiesMaker = new TableEntitiesMaker(new TypeTranslator());
         var entities = entitiesMaker.CreateObjectEntities();
-        var command = new SqlCreateTablesTranslator(entities).TranslateEntitiesToCreateTables();
+        var command = new SqlCreateTablesTranslator(entities).TranslateEntitiesToCreateTables().ToList();
 
+        var junctionCommands = new SqlCreateJunctionTableTranslator(entities).TranslateEntitiesToCreateTables().ToList();
+        
+        // var connString = "Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=testdb";
+        // using var conn = new NpgsqlConnection(connString);
+        // conn.Open();
 
-        using var connection = new SqliteConnection("Data Source=mydb.db");
-        connection.Open();
-        using var commandsql = new SqliteCommand(command.First(), connection);
-        commandsql.ExecuteNonQuery();
-
-
-        string verifySQL = "SELECT name FROM sqlite_master WHERE type='table';";
-        using var verifyCommand = new SqliteCommand(verifySQL, connection);
-        using var reader = verifyCommand.ExecuteReader();
-
-        while (reader.Read())
-        {
-            Console.WriteLine($"Table found: {reader["name"]}");
-        }
+        // using var cmd = new NpgsqlCommand(command.FirstOrDefault(), conn);
+        // cmd.ExecuteNonQuery();
     }
 }
