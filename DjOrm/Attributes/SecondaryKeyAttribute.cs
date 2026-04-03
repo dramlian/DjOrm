@@ -1,6 +1,6 @@
-public class SecondaryyKeyAttribute : Attribute
+public class SecondaryKeyAttribute : Attribute
 {
-    public SecondaryyKeyAttribute()
+    public SecondaryKeyAttribute()
     {
 
     }

@@ -68,13 +68,13 @@ public class TableEntitiesMaker : ITableEntitiesMaker
 
     public IEnumerable<PropertyInfo> GetSKPropertiesOfTable(Type tableClass)
     {
-        return tableClass.GetProperties().Where(x => x?.CustomAttributes?.FirstOrDefault()?.AttributeType == typeof(SecondaryyKeyAttribute));
+        return tableClass.GetProperties().Where(x => x?.CustomAttributes?.FirstOrDefault()?.AttributeType == typeof(SecondaryKeyAttribute));
     }
 
     public IEnumerable<PropertyInfo> ScanOrdinaryPropertiesOfTable(Type tableClass)
     {
         return tableClass.GetProperties().Where(x =>
-            !x.CustomAttributes.Any(a => a.AttributeType == typeof(PrimaryKeyAttribute) || a.AttributeType == typeof(SecondaryyKeyAttribute)));
+            !x.CustomAttributes.Any(a => a.AttributeType == typeof(PrimaryKeyAttribute) || a.AttributeType == typeof(SecondaryKeyAttribute)));
     }
 
 }

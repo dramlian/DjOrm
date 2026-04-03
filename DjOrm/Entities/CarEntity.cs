@@ -6,6 +6,6 @@ public class CarEntity
     public string? Name { get; set; }
     public string Make { get; set; }
 
-    [SecondaryyKey]
+    [SecondaryKeyAttribute]
     public DriverEntity Driver { get; set; }
 }
