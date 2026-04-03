@@ -6,6 +6,7 @@ public class DatabaseConnector : IDatabaseConnector
 
     public DatabaseConnector()
     {
+        //TODO from env
         _connString = "Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=testdb";
     }
 

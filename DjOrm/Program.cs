@@ -11,7 +11,6 @@ public class DjOrm
         commands.AddRange(junctionCommands);
 
         var databaseConnector = new DatabaseConnector();
-
         databaseConnector.ExecuteCommands(commands);
 
     }
