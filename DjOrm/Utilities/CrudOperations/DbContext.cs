@@ -1,11 +1,9 @@
 public class DbContext<T> : IDbContext<T>
 {
-    private T _data;
     private InsertUtility<T> _insertUtility;
 
-    public DbContext(T data, IDatabaseConnector dbConnect)
+    public DbContext(IDatabaseConnector dbConnect)
     {
-        _data = data;
         _insertUtility = new InsertUtility<T>(dbConnect);
     }
 

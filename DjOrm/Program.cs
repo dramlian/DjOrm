@@ -13,5 +13,7 @@ public class DjOrm
         var databaseConnector = new DatabaseConnector();
         databaseConnector.ExecuteCommands(commands);
 
+        IDbContext<CarEntity> dbContext = new DbContext<CarEntity>(databaseConnector);
+        dbContext.InsertData(new CarEntity("prius", "toyota"));
     }
 }
