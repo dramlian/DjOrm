@@ -10,17 +10,27 @@ public class DatabaseConnector : IDatabaseConnector
         _connString = "Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=testdb";
     }
 
-    public void ExecuteCommands(IEnumerable<string> commands)
+    public async Task<int> ExecuteCommandReturningId(string command)
     {
         using (var conn = new NpgsqlConnection(_connString))
         {
             conn.Open();
-            foreach (var command in commands)
+            using (var cmd = new NpgsqlCommand(command, conn))
             {
-                using (var cmd = new NpgsqlCommand(command, conn))
-                {
-                    cmd.ExecuteNonQuery();
-                }
+                var result = await cmd.ExecuteScalarAsync();
+                return Convert.ToInt32(result);
+            }
+        }
+    }
+
+    public async Task ExecuteCommand(string command)
+    {
+        using (var conn = new NpgsqlConnection(_connString))
+        {
+            conn.Open();
+            using (var cmd = new NpgsqlCommand(command, conn))
+            {
+                await cmd.ExecuteNonQueryAsync();
             }
         }
     }

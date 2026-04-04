@@ -1,4 +1,5 @@
 public interface IDatabaseConnector
 {
-    public void ExecuteCommands(IEnumerable<string> commands);
+    public Task ExecuteCommand(string command);
+    public Task<int> ExecuteCommandReturningId(string command);
 }
