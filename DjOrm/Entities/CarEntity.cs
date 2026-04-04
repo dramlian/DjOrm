@@ -12,9 +12,10 @@ public class CarEntity
     [SecondaryKeyAttribute]
     public DriverEntity? DriverTwo { get; set; }
 
-    public CarEntity(string name, string make)
+    public CarEntity(string name, string make, DriverEntity driver)
     {
         Name = name;
         Make = make;
+        Driver = driver;
     }
 }

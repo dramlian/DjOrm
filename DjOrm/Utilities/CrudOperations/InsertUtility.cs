@@ -1,3 +1,4 @@
+using System.Security.Principal;
 using System.Text;
 
 public class InsertUtility<T>
@@ -11,8 +12,16 @@ public class InsertUtility<T>
 
     public async Task InsertInputs(T input)
     {
+        if (input is null) return;
 
         var id = await InsertObj(input);
+
+        var relations = await GetAllRelationObjs(input);
+
+        foreach (var relation in relations)
+        {
+            var idRelation = await InsertObj(relation);
+        }
 
         /*   
         1. Take the mechanism modularize it and return ID
@@ -24,7 +33,21 @@ public class InsertUtility<T>
         */
     }
 
-    private async Task<int> InsertObj(T input)
+    private async Task<IEnumerable<object>> GetAllRelationObjs(T input)
+    {
+        var properties = input?.GetType()
+               .GetProperties()
+               .Where(p => p.CustomAttributes
+               .Any(a => a.AttributeType == typeof(SecondaryKeyAttribute)))
+               .Select(x => GetValueOfProperty(input, x.Name));
+
+        return properties?.Where(x => x is not null) ?? Enumerable.Empty<object>();
+    }
+
+
+
+
+    private async Task<int> InsertObj(object input)
     {
         var properties = input!.GetType()
                        .GetProperties()
@@ -33,11 +56,13 @@ public class InsertUtility<T>
                         || a.AttributeType == typeof(SecondaryKeyAttribute)))
                        .Select(x => (x.Name, x.PropertyType, GetValueOfProperty(input, x.Name)));
 
+        properties = properties.Where(x => x.Item3 is not null);
+
         var strBuilder = new StringBuilder();
         strBuilder.Append($"""INSERT INTO {input.GetType().FullName} ({string.Join(",", properties.Select(x => x.Name))}) VALUES""");
 
 
-        strBuilder.Append($"({string.Join(",", properties.Select(x => AppendQuotes(x.Item3, x.PropertyType)))}),");
+        strBuilder.Append($"({string.Join(",", properties.Select(x => AppendQuotes(x.Item3!, x.PropertyType)))}),");
         var finalValue = strBuilder.ToString();
         finalValue = finalValue[..^1] + "RETURNING Id;";
 
@@ -56,9 +81,8 @@ public class InsertUtility<T>
         }
     }
 
-    private object GetValueOfProperty(T input, string name)
+    private object? GetValueOfProperty(object input, string name)
     {
-        return input?.GetType()?.GetProperty(name)?.GetValue(input)
-        ?? throw new Exception($"Could not retrieve the data from the {name}");
+        return input?.GetType()?.GetProperty(name)?.GetValue(input);
     }
 }

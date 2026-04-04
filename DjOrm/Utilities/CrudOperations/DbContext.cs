@@ -7,17 +7,17 @@ public class DbContext<T> : IDbContext<T>
         _insertUtility = new InsertUtility<T>(dbConnect);
     }
 
-    public void InsertData(IEnumerable<T> inputs)
+    public async Task InsertData(IEnumerable<T> inputs)
     {
         foreach (var input in inputs)
         {
-            InsertData(input);
+            await InsertData(input);
         }
     }
 
-    public void InsertData(T input)
+    public async Task InsertData(T input)
     {
-        _insertUtility.InsertInputs(input);
+        await _insertUtility.InsertInputs(input);
     }
 
     public void DeleteData(IEnumerable<T> inputs)

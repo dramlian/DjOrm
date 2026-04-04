@@ -1,7 +1,7 @@
 public interface IDbContext<T>
 {
-    void InsertData(T input);
-    void InsertData(IEnumerable<T> inputs);
+    public Task InsertData(IEnumerable<T> inputs);
+    public Task InsertData(T input);
 
     void DeleteData(T input);
     void DeleteData(IEnumerable<T> inputs);

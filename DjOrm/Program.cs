@@ -2,18 +2,18 @@
 
 public class DjOrm
 {
-    public static void Main()
+    public static async Task Main()
     {
-        ITableEntitiesMaker entitiesMaker = new TableEntitiesMaker(new TypeTranslator());
-        var entities = entitiesMaker.CreateObjectEntities();
-        var commands = new SqlCreateTablesTranslator(entities).TranslateEntitiesToCreateTables().ToList();
-        var junctionCommands = new SqlCreateJunctionTableTranslator(entities).TranslateEntitiesToCreateTables().ToList();
-        commands.AddRange(junctionCommands);
+        // ITableEntitiesMaker entitiesMaker = new TableEntitiesMaker(new TypeTranslator());
+        // var entities = entitiesMaker.CreateObjectEntities();
+        // var commands = new SqlCreateTablesTranslator(entities).TranslateEntitiesToCreateTables().ToList();
+        // var junctionCommands = new SqlCreateJunctionTableTranslator(entities).TranslateEntitiesToCreateTables().ToList();
+        // commands.AddRange(junctionCommands);
 
         var databaseConnector = new DatabaseConnector();
-        databaseConnector.ExecuteCommands(commands);
+        //databaseConnector.ExecuteCommands(commands);
 
         IDbContext<CarEntity> dbContext = new DbContext<CarEntity>(databaseConnector);
-        dbContext.InsertData(new CarEntity("prius", "toyota"));
+        await dbContext.InsertData(new CarEntity("prius", "toyota", new DriverEntity("adam")));
     }
 }
