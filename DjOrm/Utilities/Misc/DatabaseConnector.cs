@@ -4,10 +4,9 @@ public class DatabaseConnector : IDatabaseConnector
 {
     private string _connString;
 
-    public DatabaseConnector()
+    public DatabaseConnector(string connString)
     {
-        //TODO from env
-        _connString = "Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=testdb";
+        _connString = connString;
     }
 
     public async Task<int> ExecuteCommandReturningId(string command)

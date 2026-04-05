@@ -1,6 +1,6 @@
 using System.Text;
 
-public class InsertUtility<T> //Todo add interface
+public class InsertUtility<T> : IInsertUtility<T>
 {
     private IDatabaseConnector dbConnect;
 
@@ -21,6 +21,7 @@ public class InsertUtility<T> //Todo add interface
 
         foreach (var relation in await GetAllRelationObjs(input))
         {
+            if (relation is null) continue;
             relations.Add(await InsertInputs(relation));
         }
 
