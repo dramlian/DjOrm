@@ -17,6 +17,7 @@ public class DbContext<T> : IDbContext<T>
 
     public async Task InsertData(T input)
     {
+        if (input is null) return;
         await _insertUtility.InsertInputs(input);
     }
 

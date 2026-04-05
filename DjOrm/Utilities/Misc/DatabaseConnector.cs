@@ -34,4 +34,20 @@ public class DatabaseConnector : IDatabaseConnector
             }
         }
     }
+
+    public async Task ExecuteCommands(IEnumerable<string> commands)
+    {
+        using (var conn = new NpgsqlConnection(_connString))
+        {
+            conn.Open();
+
+            foreach (var command in commands)
+            {
+                using (var cmd = new NpgsqlCommand(command, conn))
+                {
+                    await cmd.ExecuteNonQueryAsync();
+                }
+            }
+        }
+    }
 }
