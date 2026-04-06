@@ -18,4 +18,9 @@ public class CarEntity
         Make = make;
         Driver = driver;
     }
+
+    public CarEntity()
+    {
+
+    }
 }

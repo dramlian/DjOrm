@@ -18,5 +18,7 @@ public class DjOrm
 
         IDbContext<CarEntity> dbContext = new DbContext<CarEntity>(databaseConnector);
         await dbContext.InsertData(new CarEntity("prius", "toyota", new DriverEntity("adam")));
+
+        var objectsFetched = await dbContext.GetData();
     }
 }

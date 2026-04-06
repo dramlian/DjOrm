@@ -9,4 +9,9 @@ public class DriverEntity
     {
         Name = name;
     }
+
+    public DriverEntity()
+    {
+
+    }
 }

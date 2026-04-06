@@ -1,3 +1,4 @@
+using System.Collections;
 using Npgsql;
 
 public class DatabaseConnector : IDatabaseConnector
@@ -47,6 +48,32 @@ public class DatabaseConnector : IDatabaseConnector
                     await cmd.ExecuteNonQueryAsync();
                 }
             }
+        }
+    }
+
+    public async Task<IEnumerable<object>> GetDataReaderResults(string command, int propertiesCount)
+    {
+        using (var conn = new NpgsqlConnection(_connString))
+        {
+            conn.Open();
+            using var cmd = new NpgsqlCommand(command, conn);
+            using var reader = await cmd.ExecuteReaderAsync();
+            List<object> retObj = new List<object>();
+
+            while (await reader.ReadAsync())
+            {
+                ArrayList row = new ArrayList();
+
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    var value = reader[i];
+                    row.Add(value);
+                }
+
+                retObj.Add(row);
+            }
+
+            return retObj;
         }
     }
 }

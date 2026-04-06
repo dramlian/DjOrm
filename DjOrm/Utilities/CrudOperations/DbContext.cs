@@ -1,10 +1,13 @@
 public class DbContext<T> : IDbContext<T>
 {
-    private InsertUtility<T> _insertUtility;
+    private IInsertUtility<T> _insertUtility;
+    private ISelectUtility<T> _selectUtility;
+
 
     public DbContext(IDatabaseConnector dbConnect)
     {
         _insertUtility = new InsertUtility<T>(dbConnect);
+        _selectUtility = new SelectUtility<T>(dbConnect);
     }
 
     public async Task InsertData(IEnumerable<T> inputs)
@@ -19,6 +22,11 @@ public class DbContext<T> : IDbContext<T>
     {
         if (input is null) return;
         await _insertUtility.InsertInputs(input);
+    }
+
+    public async Task<IEnumerable<T>> GetData()
+    {
+        return await _selectUtility.GetAllData();
     }
 
     public void DeleteData(IEnumerable<T> inputs)

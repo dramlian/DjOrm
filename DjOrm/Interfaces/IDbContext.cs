@@ -6,4 +6,5 @@ public interface IDbContext<T>
     void DeleteData(IEnumerable<T> inputs);
     void UpdateData(T input);
     void UpdateData(IEnumerable<T> inputs);
+    public Task<IEnumerable<T>> GetData();
 }
