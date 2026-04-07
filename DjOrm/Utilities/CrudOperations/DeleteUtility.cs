@@ -10,7 +10,7 @@ public class DeleteUtility<T> : IDeleteUtility<T>
     public async Task DeleteData(T input)
     {
         var pk = await GetPrivateKeyNameValue(input);
-        var command = $"DELETE FROM {input.GetType().FullName} WHERE {pk.Item1} = {AppendQuotes(pk.Item2, pk.Item2.GetType())};";
+        var command = $"DELETE FROM {input?.GetType().FullName} WHERE {pk.Item1} = {AppendQuotes(pk.Item2, pk.Item2.GetType())};";
         await _dbConnect.ExecuteCommand(command);
     }
 
