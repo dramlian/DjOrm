@@ -2,20 +2,14 @@ public class DbContext<T> : IDbContext<T>
 {
     private IInsertUtility<T> _insertUtility;
     private ISelectUtility<T> _selectUtility;
+    private IDeleteUtility<T> _deleteUtility;
 
 
     public DbContext(IDatabaseConnector dbConnect)
     {
         _insertUtility = new InsertUtility<T>(dbConnect);
         _selectUtility = new SelectUtility<T>(dbConnect);
-    }
-
-    public async Task InsertData(IEnumerable<T> inputs)
-    {
-        foreach (var input in inputs)
-        {
-            await InsertData(input);
-        }
+        _deleteUtility = new DeleteUtility<T>(dbConnect);
     }
 
     public async Task InsertData(T input)
@@ -24,28 +18,18 @@ public class DbContext<T> : IDbContext<T>
         await _insertUtility.InsertInputs(input);
     }
 
+    public async Task DeleteData(T input)
+    {
+        await _deleteUtility.DeleteData(input);
+    }
+
+    public Task<T> UpdateData(T input)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<IEnumerable<T>> GetData()
     {
         return await _selectUtility.GetAllData();
-    }
-
-    public void DeleteData(IEnumerable<T> inputs)
-    {
-
-    }
-
-    public void DeleteData(T input)
-    {
-
-    }
-
-    public void UpdateData(IEnumerable<T> inputs)
-    {
-
-    }
-
-    public void UpdateData(T input)
-    {
-
     }
 }
