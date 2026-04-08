@@ -20,5 +20,10 @@ public class DjOrm
         await dbContext.InsertData(new CarEntity("prius", "toyota", new DriverEntity("adam")));
 
         var objectsFetched = await dbContext.GetData();
+
+        foreach (var obj in objectsFetched)
+        {
+            await dbContext.DeleteData(obj);
+        }
     }
 }

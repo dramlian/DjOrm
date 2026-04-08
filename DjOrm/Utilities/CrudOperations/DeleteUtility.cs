@@ -8,8 +8,9 @@ public class DeleteUtility<T> : Utility, IDeleteUtility<T>
     public async Task DeleteData(T input)
     {
         if (input == null) return;
-        var pk = (await GetNameValueOfProperty(input, new List<Type>() { typeof(PrimaryKeyAttribute) })).FirstOrDefault();
-        var command = $"DELETE FROM {input?.GetType().FullName} WHERE {pk.Item1} = {AppendQuotes(pk.Item2, pk.Item2.GetType())};";
+        var pk = (await GetNameValueOfProperty(input, new List<Type>() { typeof(PrimaryKeyAttribute) }))?.FirstOrDefault();
+        if (pk is null) return;
+        var command = $"DELETE FROM {GetObjName(input)} WHERE {pk.Value.Item1} = {AppendQuotes(pk.Value.Item2, pk.Value.Item2.GetType())};";
         await _dbConnect.ExecuteCommand(command);
     }
 }
