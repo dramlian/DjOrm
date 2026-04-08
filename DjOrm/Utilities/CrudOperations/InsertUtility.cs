@@ -48,7 +48,7 @@ public class InsertUtility<T> : Utility, IInsertUtility<T>
         strBuilder.Append($"""INSERT INTO {input.GetType().FullName} ({string.Join(",", properties.Select(x => x.Item1))}) VALUES""");
 
 
-        strBuilder.Append($"({string.Join(",", properties.Select(x => AppendQuotes(x.Item2!, x.Item2.GetType())))}),");
+        strBuilder.Append($"({string.Join(",", properties.Select(x => AppendQuotes(x.Item2!, x.Item2!.GetType())))}),");
         var finalValue = strBuilder.ToString();
         finalValue = finalValue[..^1] + "RETURNING Id;";
 

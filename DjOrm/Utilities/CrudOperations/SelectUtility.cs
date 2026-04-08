@@ -1,11 +1,9 @@
 using System.Collections;
 
-public class SelectUtility<T> : ISelectUtility<T>
+public class SelectUtility<T> : Utility, ISelectUtility<T>
 {
-    private IDatabaseConnector dbConnect;
-    public SelectUtility(IDatabaseConnector dbConnect)
+    public SelectUtility(IDatabaseConnector dbConnect) : base(dbConnect)
     {
-        this.dbConnect = dbConnect;
     }
 
     public async Task<IEnumerable<T>> GetAllData()
@@ -16,7 +14,7 @@ public class SelectUtility<T> : ISelectUtility<T>
                        .ToArray();
 
         var command = $"SELECT {String.Join(",", properties.Select(x => x.Name))} FROM {typeof(T).FullName};";
-        var rows = (await dbConnect.GetDataReaderResults(command, properties.Count())).ToArray();
+        var rows = (await _dbConnect.GetDataReaderResults(command, properties.Count())).ToArray();
 
         var result = new List<T>();
 

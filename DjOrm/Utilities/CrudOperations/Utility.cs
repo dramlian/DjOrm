@@ -7,7 +7,7 @@ public abstract class Utility
         _dbConnect = dbConnect;
     }
 
-    protected async Task<IEnumerable<(string, object)>?> GetNameValueOfProperty(object input, IEnumerable<Type> propertyAttributes)
+    protected async Task<IEnumerable<(string, object?)>?> GetNameValueOfProperty(object input, IEnumerable<Type> propertyAttributes)
     {
         var properties = input?.GetType()
                .GetProperties()?
@@ -18,7 +18,7 @@ public abstract class Utility
         return properties?.Where(x => x.Item2 is not null);
     }
 
-    protected async Task<IEnumerable<(string, object)>> GetNameValueOfPropertyWithoutAttributes(object input)
+    protected async Task<IEnumerable<(string, object?)>> GetNameValueOfPropertyWithoutAttributes(object input)
     {
         return input.GetType()
             .GetProperties()
@@ -26,10 +26,9 @@ public abstract class Utility
             .Select(x => (x.Name, GetValueOfProperty(input, x.Name)));
     }
 
-    protected object GetValueOfProperty(object input, string name)
+    protected object? GetValueOfProperty(object input, string name)
     {
-        return input?.GetType()?.GetProperty(name)?.GetValue(input)
-        ?? throw new Exception($"Could not get the name value of {name}");
+        return input?.GetType()?.GetProperty(name)?.GetValue(input);
     }
 
     protected object AppendQuotes(object obj, Type propertyType)
