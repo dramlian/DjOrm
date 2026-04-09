@@ -21,9 +21,14 @@ public class DjOrm
 
         var objectsFetched = await dbContext.GetData();
 
-        foreach (var obj in objectsFetched)
-        {
-            await dbContext.DeleteData(obj);
-        }
+        // foreach (var obj in objectsFetched)
+        // {
+        //     await dbContext.DeleteData(obj);
+        // }
+
+        var objectFetched = objectsFetched.First();
+        objectFetched.Name = "bugati";
+
+        await dbContext.UpdateData(objectFetched);
     }
 }
