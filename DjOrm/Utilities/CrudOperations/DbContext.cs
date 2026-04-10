@@ -1,9 +1,12 @@
+using System.Linq.Expressions;
 public class DbContext<T> : IDbContext<T>
 {
     private IInsertUtility<T> _insertUtility;
     private ISelectUtility<T> _selectUtility;
+    private ISelectByUtility<T> _selectByUtility;
     private IDeleteUtility<T> _deleteUtility;
     private IUpdateUtility<T> _updateUtility;
+
 
 
     public DbContext(IDatabaseConnector dbConnect)
@@ -12,6 +15,7 @@ public class DbContext<T> : IDbContext<T>
         _selectUtility = new SelectUtility<T>(dbConnect);
         _deleteUtility = new DeleteUtility<T>(dbConnect);
         _updateUtility = new UpdateUtility<T>(dbConnect);
+        _selectByUtility = new SelectByUtility<T>(dbConnect);
     }
 
     public async Task InsertData(T input)
@@ -33,5 +37,10 @@ public class DbContext<T> : IDbContext<T>
     public async Task<IEnumerable<T>> GetData()
     {
         return await _selectUtility.GetAllData();
+    }
+
+    public async Task<IEnumerable<T>> GetDataBy(Expression<Func<T, bool>> expression)
+    {
+        return await _selectByUtility.GetByExpression(expression);
     }
 }
