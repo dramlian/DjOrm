@@ -22,7 +22,9 @@ public abstract class Utility
     {
         return input.GetType()
             .GetProperties()
-            .Where(p => !p.CustomAttributes.Any())
+            .Where(p => !p.CustomAttributes.Any(a =>
+                a.AttributeType == typeof(PrimaryKeyAttribute) ||
+                a.AttributeType == typeof(SecondaryKeyAttribute)))
             .Select(x => (x.Name, GetValueOfProperty(input, x.Name)));
     }
 
