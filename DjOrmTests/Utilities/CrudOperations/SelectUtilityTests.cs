@@ -18,4 +18,6 @@ public class SelectUtilityTests
         await _selectUtility.GetAllData();
         Assert.That(_fakeConnector.LastCommand, Is.EqualTo("SELECT Id,Name FROM PersonEntity;"));
     }
+
+    //TODO ADD functionality to select also related object, seocndary key object
 }
