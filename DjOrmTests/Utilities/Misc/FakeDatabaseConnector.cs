@@ -12,6 +12,9 @@ public class FakeDatabaseConnector : IDatabaseConnector
 
     public Task<int> ExecuteCommandReturningId(string command) => Task.FromResult(0);
     public Task ExecuteCommands(IEnumerable<string> commands) => Task.CompletedTask;
-    public Task<IEnumerable<object>> GetDataReaderResults(string command, int propertiesCount) =>
-        Task.FromResult(Enumerable.Empty<object>());
+    public Task<IEnumerable<object>> GetDataReaderResults(string command, int propertiesCount)
+    {
+        LastCommand = command;
+        return Task.FromResult(Enumerable.Empty<object>());
+    }
 }
