@@ -43,13 +43,13 @@ public class TableEntitiesMaker : ITableEntitiesMaker
                        || nullabilityInfo.ReadState == NullabilityState.Nullable; ;
     }
 
-    public IEnumerable<Type> ScanAllClasses()
+    private IEnumerable<Type> ScanAllClasses()
     {
         return _assembly.GetTypes()
             .Where(t => t.GetCustomAttribute<TableAttribute>() != null);
     }
 
-    public PropertyInfo GetPKPropertiesOfTable(Type tableClass)
+    private PropertyInfo GetPKPropertiesOfTable(Type tableClass)
     {
         var pkProperties = tableClass.GetProperties().Where(x => x?.CustomAttributes?.FirstOrDefault()?.AttributeType == typeof(PrimaryKeyAttribute));
 
@@ -60,12 +60,12 @@ public class TableEntitiesMaker : ITableEntitiesMaker
         return pkProperties.First();
     }
 
-    public IEnumerable<PropertyInfo> GetSKPropertiesOfTable(Type tableClass)
+    private IEnumerable<PropertyInfo> GetSKPropertiesOfTable(Type tableClass)
     {
         return tableClass.GetProperties().Where(x => x?.CustomAttributes?.FirstOrDefault()?.AttributeType == typeof(SecondaryKeyAttribute));
     }
 
-    public IEnumerable<PropertyInfo> ScanOrdinaryPropertiesOfTable(Type tableClass)
+    private IEnumerable<PropertyInfo> ScanOrdinaryPropertiesOfTable(Type tableClass)
     {
         return tableClass.GetProperties().Where(x =>
             !x.CustomAttributes.Any(a => a.AttributeType == typeof(PrimaryKeyAttribute) || a.AttributeType == typeof(SecondaryKeyAttribute)));
