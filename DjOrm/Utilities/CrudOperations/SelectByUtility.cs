@@ -61,7 +61,7 @@ public class SelectByUtility<T> : SelectUtility<T>, ISelectByUtility<T>
             {
                 return memberExpression.Member.Name;
             }
-            var memberExpressionValue = Expression.Lambda(memberExpression).Compile().DynamicInvoke()?.ToString();
+            var memberExpressionValue = Expression.Lambda(memberExpression).Compile().DynamicInvoke();
             if (memberExpressionValue is not null)
             {
                 return AppendQuotes(memberExpressionValue, memberExpressionValue.GetType()).ToString() ?? string.Empty;
