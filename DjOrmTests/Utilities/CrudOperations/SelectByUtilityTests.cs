@@ -2,7 +2,7 @@ using DjOrmTests;
 
 public class SelectByUtilityTests
 {
-    private SelectByUtility<EmployeeEntity> _selectByUtility;
+    private ISelectByUtility<EmployeeEntity> _selectByUtility;
     private FakeDatabaseConnector _fakeConnector;
 
     [SetUp]

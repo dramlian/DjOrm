@@ -2,7 +2,7 @@ namespace DjOrmTests;
 
 public class SelectUtilityTests
 {
-    private SelectUtility<PersonEntity> _selectUtility;
+    private ISelectUtility<PersonEntity> _selectUtility;
     private FakeDatabaseConnector _fakeConnector;
 
     [SetUp]

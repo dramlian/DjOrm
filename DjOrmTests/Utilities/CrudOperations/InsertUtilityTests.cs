@@ -2,7 +2,7 @@ namespace DjOrmTests;
 
 public class InsertUtilityTests
 {
-    private InsertUtility<PersonEntity> _insertUtility;
+    private IInsertUtility<PersonEntity> _insertUtility;
     private FakeDatabaseConnector _fakeConnector;
 
     [SetUp]

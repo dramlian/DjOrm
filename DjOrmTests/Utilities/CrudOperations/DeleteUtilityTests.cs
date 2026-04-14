@@ -2,7 +2,7 @@ namespace DjOrmTests;
 
 public class DeleteUtilityTests
 {
-    private DeleteUtility<PersonEntity> _deleteUtility;
+    private IDeleteUtility<PersonEntity> _deleteUtility;
     private FakeDatabaseConnector _fakeConnector;
 
     [SetUp]

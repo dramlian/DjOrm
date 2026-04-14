@@ -2,7 +2,7 @@ namespace DjOrmTests;
 
 public class UpdateUtilityTests
 {
-    private UpdateUtility<EmployeeEntity> _updateUtility;
+    private IUpdateUtility<EmployeeEntity> _updateUtility;
     private FakeDatabaseConnector _fakeConnector;
 
     [SetUp]
