@@ -5,10 +5,10 @@ public class TableEntitiesMaker : ITableEntitiesMaker
     private ITypeTranslator _typeTranslator;
     private Assembly _assembly;
 
-    public TableEntitiesMaker(ITypeTranslator typeTranslator)
+    public TableEntitiesMaker(ITypeTranslator typeTranslator, Assembly? assembly = null)
     {
         _typeTranslator = typeTranslator;
-        _assembly = Assembly.GetExecutingAssembly();
+        _assembly = assembly ?? Assembly.GetExecutingAssembly();
     }
 
     public IEnumerable<Table> CreateObjectEntities()
