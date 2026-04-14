@@ -54,7 +54,7 @@ public class SqlCreateJunctionTableTranslatorTests
             CONSTRAINT fk_{articleFullName} FOREIGN KEY ({articleFullName}Id) REFERENCES {articleFullName}(Id) ON DELETE CASCADE,
             CONSTRAINT fk_{tagFullName} FOREIGN KEY ({tagFullName}Id) REFERENCES {tagFullName}(Id) ON DELETE CASCADE
             );
-        """));
+            """));
     }
 
     [Test]
