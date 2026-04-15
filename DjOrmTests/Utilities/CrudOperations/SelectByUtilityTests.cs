@@ -54,4 +54,11 @@ public class SelectByUtilityTests
         await _selectByUtility.GetByExpression(x => x.Age > minAge);
         Assert.That(_fakeConnector.LastCommand, Is.EqualTo("SELECT * FROM EmployeeEntity WHERE (Age > 21);"));
     }
+
+    [Test]
+    public async Task GetByExpression_NoExpression()
+    {
+        await _selectByUtility.GetByExpression();
+        Assert.That(_fakeConnector.LastCommand, Is.EqualTo("SELECT * FROM EmployeeEntity ;"));
+    }
 }

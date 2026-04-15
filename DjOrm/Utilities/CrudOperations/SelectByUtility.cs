@@ -1,15 +1,17 @@
+using System.Collections;
 using System.Linq.Expressions;
+using System.Reflection;
 
-public class SelectByUtility<T> : SelectUtility<T>, ISelectByUtility<T>
+public class SelectByUtility<T> : Utility, ISelectByUtility<T>
 {
     public SelectByUtility(IDatabaseConnector dbConnect) : base(dbConnect)
     {
     }
 
-    public async Task<IEnumerable<T>> GetByExpression(Expression<Func<T, bool>> expression)
+    public async Task<IEnumerable<T>> GetByExpression(Expression<Func<T, bool>>? expression = null)
     {
         var properties = GetPropertyInfos();
-        var command = $"SELECT * FROM {typeof(T).FullName} WHERE {Travel(expression.Body)};";
+        var command = $"SELECT * FROM {typeof(T).FullName} {(expression == null ? ";" : $"WHERE {Travel(expression.Body)};")}";
         var rows = (await _dbConnect.GetDataReaderResults(command, properties.Count())).ToArray();
         return CastRowsIntoObjects(rows, properties);
     }
@@ -73,5 +75,32 @@ public class SelectByUtility<T> : SelectUtility<T>, ISelectByUtility<T>
         }
 
         return input.ToString();
+    }
+
+    private PropertyInfo[] GetPropertyInfos()
+    {
+        return typeof(T).GetProperties()
+                       .Where(p => !p.CustomAttributes
+                       .Any(a => a.AttributeType == typeof(SecondaryKeyAttribute)))
+                       .ToArray();
+    }
+
+    private IEnumerable<T> CastRowsIntoObjects(object[] rows, System.Reflection.PropertyInfo[] properties)
+    {
+        var result = new List<T>();
+
+        foreach (var row in rows.Cast<ArrayList>())
+        {
+            var obj = Activator.CreateInstance<T>() ??
+            throw new InvalidOperationException($"Could not create instance of {typeof(T).Name}");
+            for (int i = 0; i < properties.Length; i++)
+            {
+                var prop = obj.GetType().GetProperty(properties[i].Name);
+                prop?.SetValue(obj, Convert.ChangeType(row[i], properties[i].PropertyType));
+            }
+            result.Add(obj);
+        }
+
+        return result;
     }
 }
