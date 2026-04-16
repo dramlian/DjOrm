@@ -1,3 +1,4 @@
+using System.Collections;
 using DjOrmTests;
 
 public class SelectByUtilityTests
@@ -60,5 +61,23 @@ public class SelectByUtilityTests
     {
         await _selectByUtility.GetByExpression<ArticleEntity>(null, true);
         Assert.That(_fakeConnector.LastCommand, Is.EqualTo("SELECT * FROM ArticleEntity ;"));
+    }
+
+    [Test]
+    public async Task GetByExpression_Recursive_IssuesAllThreeCommands()
+    {
+        _fakeConnector.EnqueueResult([new ArrayList { 1, "Test Article" }]);
+        _fakeConnector.EnqueueResult([new ArrayList { 1, 2 }]);
+        _fakeConnector.EnqueueResult([new ArrayList { 2, "Tech" }]);
+
+        await _selectByUtility.GetByExpression<ArticleEntity>(null, recursive: true);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(_fakeConnector.AllCommands, Has.Count.EqualTo(3));
+            Assert.That(_fakeConnector.AllCommands[0], Is.EqualTo("SELECT * FROM ArticleEntity ;"));
+            Assert.That(_fakeConnector.AllCommands[1], Is.EqualTo("SELECT * FROM ArticleEntityTagEntity WHERE ArticleEntityId = 1;"));
+            Assert.That(_fakeConnector.AllCommands[2], Is.EqualTo("SELECT * FROM TagEntity WHERE (Id = 2);"));
+        });
     }
 }
