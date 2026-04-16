@@ -21,7 +21,7 @@ public class SelectByUtility : Utility, ISelectByUtility
             foreach (var castedObject in castedObjects)
             {
                 if (castedObject is null) continue;
-                var pk = (await GetNameValueOfProperty(castedObject, new List<Type>() { typeof(PrimaryKeyAttribute) }))?.First();
+                var pk = GetNameValueOfProperty(castedObject, [typeof(PrimaryKeyAttribute)])?.First();
                 if (pk is null || pk.Value.Item2 is null) continue;
 
                 foreach (var relation in relations)

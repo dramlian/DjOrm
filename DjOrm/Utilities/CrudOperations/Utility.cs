@@ -7,7 +7,7 @@ public abstract class Utility
         _dbConnect = dbConnect;
     }
 
-    protected async Task<IEnumerable<(string, object?)>?> GetNameValueOfProperty(object input, IEnumerable<Type> propertyAttributes)
+    protected IEnumerable<(string, object?)>? GetNameValueOfProperty(object input, IEnumerable<Type> propertyAttributes)
     {
         var properties = input?.GetType()
                .GetProperties()?
@@ -18,7 +18,7 @@ public abstract class Utility
         return properties?.Where(x => x.Item2 is not null);
     }
 
-    protected async Task<IEnumerable<(string, object?)>> GetNameValueOfPropertyWithoutAttributes(object input)
+    protected IEnumerable<(string, object?)> GetNameValueOfPropertyWithoutAttributes(object input)
     {
         return input.GetType()
             .GetProperties()

@@ -10,9 +10,9 @@ public class UpdateUtility<T> : Utility, IUpdateUtility<T>
     {
         if (input is null) return;
         string name = GetObjName(input);
-        var pk = (await GetNameValueOfProperty(input, new List<Type>() { typeof(PrimaryKeyAttribute) }))?.First();
+        var pk = GetNameValueOfProperty(input, new List<Type>() { typeof(PrimaryKeyAttribute) })?.First();
         if (pk is null || pk.Value.Item1 is null || pk.Value.Item2 is null) return;
-        var attributes = await GetNameValueOfPropertyWithoutAttributes(input);
+        var attributes = GetNameValueOfPropertyWithoutAttributes(input);
 
         var command = $"UPDATE {name} SET ";
         StringBuilder stringBuilder = new StringBuilder();

@@ -13,7 +13,7 @@ public class InsertUtility<T> : Utility, IInsertUtility<T>
         var id = await InsertObj(input);
         var name = GetObjName(input);
         var relations = new List<(int, string)>();
-        var fetchedRelations = await GetNameValueOfProperty(input, new List<Type>() { typeof(SecondaryKeyAttribute) });
+        var fetchedRelations = GetNameValueOfProperty(input, new List<Type>() { typeof(SecondaryKeyAttribute) });
 
         if (fetchedRelations is not null && fetchedRelations.Any())
         {
@@ -40,7 +40,7 @@ public class InsertUtility<T> : Utility, IInsertUtility<T>
 
     private async Task<int> InsertObj(object input)
     {
-        var properties = await GetNameValueOfPropertyWithoutAttributes(input);
+        var properties = GetNameValueOfPropertyWithoutAttributes(input);
 
         properties = properties.Where(x => x.Item2 is not null);
 
