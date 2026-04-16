@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 public class DbContext<T> : IDbContext<T>
 {
     private IInsertUtility<T> _insertUtility;
-    private ISelectByUtility<T> _selectByUtility;
+    private ISelectByUtility _selectByUtility;
     private IDeleteUtility<T> _deleteUtility;
     private IUpdateUtility<T> _updateUtility;
 
@@ -13,7 +13,7 @@ public class DbContext<T> : IDbContext<T>
         _insertUtility = new InsertUtility<T>(dbConnect);
         _deleteUtility = new DeleteUtility<T>(dbConnect);
         _updateUtility = new UpdateUtility<T>(dbConnect);
-        _selectByUtility = new SelectByUtility<T>(dbConnect);
+        _selectByUtility = new SelectByUtility(dbConnect);
     }
 
     public async Task InsertData(T input)
@@ -32,13 +32,13 @@ public class DbContext<T> : IDbContext<T>
         await _updateUtility.UpdateData(input);
     }
 
-    public async Task<IEnumerable<T>> GetData()
+    public async Task<IEnumerable<T>> GetData(bool isRecursive = false)
     {
-        return await _selectByUtility.GetByExpression();
+        return await _selectByUtility.GetByExpression<T>(null, isRecursive);
     }
 
-    public async Task<IEnumerable<T>> GetDataBy(Expression<Func<T, bool>> expression)
+    public async Task<IEnumerable<T>> GetDataBy(Expression<Func<T, bool>> expression, bool isRecursive = false)
     {
-        return await _selectByUtility.GetByExpression(expression);
+        return await _selectByUtility.GetByExpression<T>(expression, isRecursive);
     }
 }
